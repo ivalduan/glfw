@@ -2511,6 +2511,18 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height, const char* title, G
  */
 GLFWAPI void glfwDestroyWindow(GLFWwindow* window);
 
+/*! @brief Creates a context.
+
+*  @ingroup context
+*/
+GLFWAPI int glfwCreateContext(GLFWwindow* window);
+
+/*! @brief Destroys the context.
+
+*  @ingroup context
+*/
+GLFWAPI void glfwDestroyContext(GLFWwindow* window);
+
 /*! @brief Checks the close flag of the specified window.
  *
  *  This function returns the value of the close flag of the specified window.

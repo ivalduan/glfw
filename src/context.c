@@ -608,6 +608,57 @@ GLFWbool _glfwStringInExtensionString(const char* string, const char* extensions
 //////                        GLFW public API                       //////
 //////////////////////////////////////////////////////////////////////////
 
+GLFWAPI int glfwCreateContext(GLFWwindow* handle)
+{
+    _GLFWwindow* window = (_GLFWwindow*)handle;
+
+    _GLFW_REQUIRE_INIT();
+
+    _GLFWfbconfig fbconfig;
+    _GLFWctxconfig ctxconfig;
+
+    fbconfig = _glfw.hints.framebuffer;
+    ctxconfig = _glfw.hints.context;
+
+    if (!_glfwIsValidContextConfig(&ctxconfig))
+        return NULL;
+
+    // Create its context
+    if (!_glfwPlatformCreateContext(window, &ctxconfig, &fbconfig))
+    {
+        _glfwInputError(GLFW_PLATFORM_ERROR,
+            "Cannot make current with a window that has no OpenGL or OpenGL ES context");
+        return;
+    }
+
+    if (ctxconfig.client != GLFW_NO_API)
+    {
+        if (!_glfwRefreshContextAttribs(window, &ctxconfig))
+        {
+            glfwDestroyContext((GLFWwindow*)window);
+            return NULL;
+        }
+    }
+}
+
+GLFWAPI void glfwDestroyContext(GLFWwindow* handle)
+{
+    _GLFWwindow* window = (_GLFWwindow*)handle;
+
+    _GLFW_REQUIRE_INIT();
+
+    // Allow closing of NULL (to match the behavior of free)
+    if (window == NULL)
+        return;
+
+    // The window's context must not be current on another thread when the
+    // window is destroyed
+    if (window == _glfwPlatformGetTls(&_glfw.contextSlot))
+        glfwMakeContextCurrent(NULL);
+
+    _glfwPlatformDestroyContext(window);
+}
+
 GLFWAPI void glfwMakeContextCurrent(GLFWwindow* handle)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;

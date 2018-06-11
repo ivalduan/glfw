@@ -27,6 +27,11 @@
 
 #pragma once
 
+#define GLEW_STATIC
+#include "../../GLEW/GL/glew.h"
+
+#define _GLFW_USE_CONFIG_H
+
 #if defined(_GLFW_USE_CONFIG_H)
  #include "glfw_config.h"
 #endif
@@ -643,6 +648,10 @@ void _glfwPlatformSetWindowSizeLimits(_GLFWwindow* window,
                                       int minwidth, int minheight,
                                       int maxwidth, int maxheight);
 void _glfwPlatformSetWindowAspectRatio(_GLFWwindow* window, int numer, int denom);
+int _glfwPlatformCreateContext(_GLFWwindow* window,
+                               const _GLFWctxconfig* ctxconfig,
+                               const _GLFWfbconfig* fbconfig);
+void _glfwPlatformDestroyContext(_GLFWwindow* window);
 void _glfwPlatformGetFramebufferSize(_GLFWwindow* window, int* width, int* height);
 void _glfwPlatformGetWindowFrameSize(_GLFWwindow* window,
                                      int* left, int* top,
